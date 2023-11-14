@@ -18,8 +18,6 @@
 // - 输出是一个字符串类型的 Vector。
 // 这次没有提示！
 
-// I AM NOT DONE
-
 pub enum Command {
     Uppercase,
     Trim,
@@ -30,11 +28,23 @@ mod my_module {
     use super::Command;
 
     // TODO: 补全函数签名！
-    pub fn transformer(input: ???) -> ??? {
+    pub fn transformer(input: Vec<(String, Command)>) -> Vec<String> {
         // TODO: 完成 output 的声明！
-        let mut output: ??? = vec![];
+        let mut output: Vec<String> = vec![];
         for (string, command) in input.iter() {
             // TODO: 完成函数体。你可以做到的！
+            let new_str = match command {
+                Command::Uppercase => string.to_uppercase(),
+                Command::Trim => string.trim().to_string(),
+                Command::Append(num) => {
+                    let mut string = string.to_string();
+                    for _ in 0..*num {
+                        string.push_str("bar");
+                    }
+                    string
+                }
+            };
+            output.push(new_str);
         }
         output
     }
@@ -43,7 +53,7 @@ mod my_module {
 #[cfg(test)]
 mod tests {
     // TODO: 我们需要导入什么使作用域中有 `transformer`？
-    use ???;
+    use super::my_module::transformer;
     use super::Command;
 
     #[test]
