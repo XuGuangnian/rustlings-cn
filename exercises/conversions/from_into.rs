@@ -33,10 +33,28 @@ impl Default for Person {
 // 如果当解析 age 时发生了错误，那么返回默认版本的 Person
 // 不然， 利用结果返回一个实例化的 Person 对象。
 
-// I AM NOT DONE
-
 impl From<&str> for Person {
     fn from(s: &str) -> Person {
+        if s.is_empty() {
+            Person::default()
+        } else {
+            let mut iter = s.split(",");
+            let name = match iter.next() {
+                Some("") | None => return Person::default(),
+                Some(name) => name.to_string(),
+            };
+            let age = match iter.next() {
+                Some(age) => match age.parse() {
+                    Ok(age) => age,
+                    Err(_) => return Person::default(),
+                },
+                None => return Person::default(),
+            };
+            match iter.next() {
+                None => Person {name, age},
+                Some(_) => Person::default(),
+            }
+        }
     }
 }
 

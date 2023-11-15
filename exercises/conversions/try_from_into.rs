@@ -22,8 +22,6 @@ enum IntoColorError {
     IntConversion,
 }
 
-// I AM NOT DONE
-
 // 你的任务是完成这个实现并返回一个 Ok 结果，内含一个 Color 类型。
 // 你需要针对一个包含三个整数的元组、一个包含三个整数的数组以及一个整数切片创建实现。
 //
@@ -35,6 +33,13 @@ enum IntoColorError {
 impl TryFrom<(i16, i16, i16)> for Color {
     type Error = IntoColorError;
     fn try_from(tuple: (i16, i16, i16)) -> Result<Self, Self::Error> {
+        let (r, g, b) = tuple;
+        let (red, green, blue) = (
+            u8::try_from(r).or(Err(IntoColorError::IntConversion))?,
+            u8::try_from(g).or(Err(IntoColorError::IntConversion))?,
+            u8::try_from(b).or(Err(IntoColorError::IntConversion))?,
+        );
+        Ok(Color { red, green, blue })
     }
 }
 
@@ -42,6 +47,8 @@ impl TryFrom<(i16, i16, i16)> for Color {
 impl TryFrom<[i16; 3]> for Color {
     type Error = IntoColorError;
     fn try_from(arr: [i16; 3]) -> Result<Self, Self::Error> {
+        let [r, g, b] = arr;
+        (r, g, b).try_into()
     }
 }
 
@@ -49,6 +56,10 @@ impl TryFrom<[i16; 3]> for Color {
 impl TryFrom<&[i16]> for Color {
     type Error = IntoColorError;
     fn try_from(slice: &[i16]) -> Result<Self, Self::Error> {
+        match slice {
+            [r, g, b] => Color::try_from((*r, *g, *b)),
+            _ => Err(IntoColorError::BadLen),
+        }
     }
 }
 
